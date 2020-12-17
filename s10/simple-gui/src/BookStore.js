@@ -2,15 +2,16 @@ import { EventEmitter } from 'fbemitter'
 
 const SERVER = 'http://localhost:8080'
 
-class BookshelfStore {
-  constructor () {
+class BookStore {
+  constructor (bookshelfId) {
+    this.bookshelfId = bookshelfId
     this.data = []
     this.emitter = new EventEmitter()
   }
 
   async getAll() {
     try {
-      const response = await fetch(`${SERVER}/bookshelves`)
+      const response = await fetch(`${SERVER}/bookshelves/${this.bookshelfId}/books`)
       const data = await response.json()
       this.data = data
       this.emitter.emit('GET_ALL_SUCCESS')
@@ -20,14 +21,14 @@ class BookshelfStore {
     }
   }
 
-  async addOne(bookshelf) {
+  async addOne(book) {
     try {
-      await fetch(`${SERVER}/bookshelves`, {
+      await fetch(`${SERVER}/bookshelves/${this.bookshelfId}/books`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(bookshelf)
+        body: JSON.stringify(book)
       })
       this.getAll()
     } catch (err) {
@@ -38,7 +39,7 @@ class BookshelfStore {
 
   async deleteOne(id) {
     try {
-      await fetch(`${SERVER}/bookshelves/${id}`, {
+      await fetch(`${SERVER}/bookshelves/${this.bookshelfId}/books/${id}`, {
         method: 'delete'
       })
       this.getAll()
@@ -48,14 +49,14 @@ class BookshelfStore {
     }
   }
 
-  async saveOne(id, bookshelf) {
+  async saveOne(id, book) {
     try {
-      await fetch(`${SERVER}/bookshelves/${id}`, {
+      await fetch(`${SERVER}/bookshelves/${this.bookshelfId}/books/${id}`, {
         method: 'put',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(bookshelf)
+        body: JSON.stringify(book)
       })
       this.getAll()
     } catch (err) {
@@ -65,6 +66,4 @@ class BookshelfStore {
   }
 }
 
-const store = new BookshelfStore()
-
-export default store
+export default BookStore
