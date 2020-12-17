@@ -24,6 +24,10 @@ class BookshelfDetails extends React.Component {
     this.delete = (id) => {
       this.store.deleteOne(id)
     } 
+
+    this.save = (id, book) => {
+      this.store.saveOne(id, book)
+    }
   }
 
   componentDidMount() {
@@ -42,7 +46,7 @@ class BookshelfDetails extends React.Component {
         i will be the details for {this.props.item}
         <div>
           {
-            this.state.books.map(e => <Book item={e} key={e.id} onDelete={this.delete} />)
+            this.state.books.map(e => <Book item={e} key={e.id} onDelete={this.delete} onSave={this.save} />)
           }
         </div>
         <BookAddForm onAdd={this.add} />
